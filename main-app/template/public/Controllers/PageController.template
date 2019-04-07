@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <title>Fajowa strona</title>
+</head>
+
+<body php-code="echo 'Witamy!' . (1+2);  echo 'Źegnamy!';">
+    <script type="text/javascript" src="php.js"></script>
+    <script type='text/javascript'>
+
+        var phpModule;
+
+        function run_code(code) {
+                code = code.replace(/^\s*<\?php/, "") // remove <?php
+                code = code + "\necho PHP_EOL;" // flush line buffer
+                let ret = phpModule.ccall('pib_eval', 'number', ["string"], [code]);
+                if (ret != 0) {
+                    alert("Error, please check your code");
+                }
+       };
+       
+       function init() {
+       
+         var code = document.querySelector('body').getAttribute('php-code');
+         run_code(code);
+         run_code('echo "<span style=\'color: white; background: black;\'>End of message</span>";');
+      }
+
+        var PHPOptions = {
+            errorReporting: "none",
+            errorLog: "none"
+        };
+        var phpModuleOptions = {
+            postRun: [init],
+            print: function (text) {
+                if (arguments.length > 1) {
+                    text = Array.prototype.slice.call(arguments).join(' ');
+                }
+                document.querySelector('body').innerHTML = document.querySelector('body').innerHTML + text;
+            },
+            printErr: function (text) {
+                if (arguments.length > 1) {
+                    text = Array.prototype.slice.call(arguments).join(' ');
+                }
+                
+                if (PHPOptions.errorReporting == 'all') {
+                  
+                  document.querySelector('body').innerHTML = document.querySelector('body').innerHTML + text;
+                }
+                
+                if (PHPOptions.errorLog == 'all') {
+                  
+                  console.log(text);
+                }
+            }
+        };
+        phpModule = PHP(phpModuleOptions);
+    </script>
+    
+    <p><strong>GLOBAL PATH:</strong> :server:(field:breadcumbs:)</p>
+    <p><strong>RELATIVE PATH:</strong> :server:(field:module_breadcumbs:)</p>
+    :server:(class-path:Layout:)
+</body>
+
+</html>

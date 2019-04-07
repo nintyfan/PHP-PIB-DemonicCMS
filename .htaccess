@@ -1,0 +1,15 @@
+SetEnv HTTP_MOD_REWRITE On
+RewriteEngine On
+RewriteRule ^ - [E=DONE:,E=DONE:%{ENV:REDIRECT_DONE}]
+RewriteRule ^ - [E=DemonicCMS_Controller_query_string:,E=DemonicCMS_Controller_query_string:%{ENV:REDIRECT_DemonicCMS_Controller_query_string}] 
+RewriteCond %{ENV:DONE} !^$
+RewriteRule ^ - [END]
+RewriteRule ^Framework/index.php - [END]
+RewriteRule ^Framework - [F]
+
+RewriteCond %{QUERY_STRING} ^(.+)$
+RewriteRule ^ - [E=DemonicCMS_Controller_query_string:,E=DemonicCMS_Controller_query_string:%1]
+
+RewriteRule ([^\?]+)? Framework/index.php?Controller=$1 [L,E=DONE:1] 
+ 	
+
