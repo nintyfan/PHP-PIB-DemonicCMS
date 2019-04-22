@@ -56,6 +56,17 @@ class Basic_Controller {
       if (in_array($path, $this->actions)) {
       
         $action_name = $path;
+        $call_pre = true;
+        try {
+          
+          new \ReflectionMethod($this, 'pre_action');
+          
+        }
+        catch (Exception $error) {
+          
+          $call_pre = false;
+        }
+        if (true === $call_pre) $this->pre_action($get_params, $post_params, $language, $headers);
         
         return $this->$action_name($get_params, $post_params, $language, $headers);
 
@@ -74,6 +85,11 @@ class Basic_Controller {
   }
   
   public function set_field($name, $value)
+  {
+    $this->fields[$name] = $value;
+  }
+  
+  public function set_ref($name, &$value)
   {
     $this->fields[$name] = $value;
   }

@@ -35,6 +35,7 @@ while (NULL != ($file = readdir($dir))) {
     
     $autoload_data[] = [];
     /* Path for any kind of class */
+    $autoload_data[count($autoload_data)-1]['directory'] = $file;
     $autoload_data[count($autoload_data)-1]['path'] = [];
     /* Path for controllers classes */
     $autoload_data[count($autoload_data)-1]['ctrl_path'] = [];
@@ -67,6 +68,15 @@ while (NULL != ($file = readdir($dir))) {
         if (!empty($prefix)) {
         
           $autoload_data[count($autoload_data)-1]['prefix'] = $prefix;
+        }
+        
+      }
+      else if (0 === strpos($line, 'files-path:')) {
+        
+        $prefix = substr($line, strlen('files-path:'));
+        if (!empty($prefix)) {
+          
+          $autoload_data[count($autoload_data)-1]['files-path'] = $prefix;
         }
         
       }

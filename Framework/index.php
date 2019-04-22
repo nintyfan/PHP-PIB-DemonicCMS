@@ -120,6 +120,28 @@ if (isset($_SERVER['DemonicCMS_Controller_query_string'])) {
   }
 }
 
+if (!empty($_GET['Controller']))
+foreach ($autoload_data as $module) {
+
+  if (isset($module['files-path'])) {
+  
+    if (0 === strpos('/' . $_GET['Controller'], $module ['prefix'] . $module['files-path'])) {
+    
+      set_time_limit(0);
+      $withoutPrefix = substr('/' . $_GET['Controller'], strlen($module ['prefix']));
+      $withoutPrefix = realpath( $module['directory'] . '/' . $withoutPrefix);
+      if (!file_exists($withoutPrefix)) {
+      
+        die('Bad');
+      }
+      
+      $fp = fopen($withoutPrefix, "r");
+      fpassthru($fp);
+      exit();
+    }
+  }
+}
+
 $main_controller = 'Page';
 $main_controler_params = ['Page' => 'Home'];
 if (!empty($_GET['Controller'])) {

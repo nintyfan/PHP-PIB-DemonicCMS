@@ -18,5 +18,65 @@
  */
 class BrowserCodeBuilder_Controller extends Basic_Controller {
 
+  public $__js_init_code = [
+    
+  ];
   
+  /*
+   * $path - path to array (each element is piece of code - block or instruction). Block of code are representing by arrays and instructions by strings.
+   * $code - an array, representing block of code or string representing instruction
+   */
+
+  private function __construct_code($ins)
+  {
+    $instructions = '';
+    
+    if (is_array($ins)) {
+    
+      foreach ($ins as $single) {
+      
+        $instructions = $instructions . $this->__construct_code($single);
+      }
+    }
+    else return $ins;
+    
+    return $instructions;
+  }
+  
+  public function pre_action()
+  {
+    
+    $this->set_ref('js-code', htmlspecialchars($this->__construct_code($this->__js_init_code)));
+    
+    
+  }
+  
+  protected function append_js_init_code($path, $code)
+  {
+    $parts = explode('/', $path);
+    $arr = &$this->__js_init_code;
+    $prev_arr = null;
+    
+    foreach ($parts as $part) {
+    
+      if (empty($arr[$part])) {
+      
+        break;
+      }
+      
+      $prev_arr = $arr;
+      $arr = &$arr[$part];
+    }
+    
+    if (is_array($code)) {
+    
+      if (empty($prev_arr)) return;
+      $prev_arr[$parts[count($parts)-2]][$parts[count($parts)-1]] = $code;
+    }
+    else {
+    
+    }
+    $arr[] = $code;
+    
+  }
 }
